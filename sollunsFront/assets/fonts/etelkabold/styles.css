@@ -1,0 +1,8 @@
+
+@font-face {
+  font-family: 'EtelkaMediumPro-Bold';
+  src: url('EtelkaMediumPro-Bold.eot?#iefix') format('embedded-opentype'),  url('EtelkaMediumPro-Bold.otf')  format('opentype'),
+	     url('EtelkaMediumPro-Bold.woff') format('woff'), url('EtelkaMediumPro-Bold.ttf')  format('truetype'), url('EtelkaMediumPro-Bold.svg#EtelkaMediumPro-Bold') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}

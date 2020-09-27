@@ -1,0 +1,85 @@
+*{text-decoration:none; list-style:none; margin:0px; padding:0px; outline:none;}
+/*body{margin:0px; padding:0px; font-family: 'Open Sans', sans-serif;}*/
+section{width:100%; max-width:1200px; margin:0px auto; display:table; position:relative;}
+h1{margin:0px auto; display:table; font-size:26px; padding:40px 0px; color:#1E4081; text-align:center;}
+h1 span{font-weight:500;}
+
+header{
+    z-index: 10;
+    position: fixed;
+    width:100%; display:table;
+    background-color: rgba(233, 233, 233, 0.63);
+    /*background-color: rgba(35,64,129,0.8);*/
+    /*margin-bottom:50px;*/
+    font-family: 'EtelkaLightPro' !important;
+    top: -110px;
+
+}
+#logo{float:left; font-size:24px; text-transform:uppercase; color:#1E4081; font-weight:600; padding:9px 0px;}
+nav{width:auto; float:right;}
+nav ul{display:table; float:right;}
+nav ul li{float:left;}
+nav ul li:last-child{padding-right:0px;}
+nav ul li a{color:#1E4081; font-size:18px; padding: 21px 15px; display:inline-block; transition: all 0.5s ease 0s;}
+nav ul li a:hover{background-color:#1E4081; color: #e9e9e9; transition: all 0.5s ease 0s;}
+nav ul li a:hover i{color: #e9e9e9; transition: all 0.5s ease 0s;}
+nav ul li a i{padding-right:10px; color:#1E4081; transition: all 0.5s ease 0s; top: 6px; position: relative }
+
+.toggle-menu ul{display:table; width:25px;}
+.toggle-menu ul li{width:100%; height:3px; background-color:#1E4081; margin-bottom:4px;}
+.toggle-menu ul li:last-child{margin-bottom:0px;}
+
+input[type=checkbox], label{display:none;}
+
+.content{display:table; margin-bottom:60px; width:900px;}
+.content h2{font-size:18px; font-weight:500; color:#1E4081; border-bottom:1px solid #e9e9e9; display:table; padding-bottom:10px; margin-bottom:10px;}
+.content p{font-size:14px; line-height:22px; color:#7c7c7c; text-align:justify;}
+
+footer{display:table; padding-bottom:30px; width:100%;}
+.social{margin:0px auto; display:table; display:table;}
+.social li{float:left; padding:0px 10px;}
+.social li a{color:#1E4081; transition: all 0.5s ease 0s;}
+.social li a:hover{color: #e9e9e9; transition: all 0.5s ease 0s;}
+
+@media only screen and (max-width: 1440px) {
+    section{max-width:95%;}
+}
+
+@media only screen and (max-width: 980px) {
+    header{padding:20px 0px;}
+    #logo{padding:0px;}
+    input[type=checkbox] {position: absolute; top: -9999px; left: -9999px; background:none;}
+    input[type=checkbox]:fous{background:none;}
+    label {float:right; padding:8px 0px; display:inline-block; cursor:pointer; }
+    input[type=checkbox]:checked ~ nav {display:block;}
+
+    nav{display:none; position:absolute; right:0px; top:53px; background-color:#1E4081; padding:0px; z-index:99;}
+    nav ul{width:auto;}
+    nav ul li{float:none; padding:0px; width:100%; display:table;}
+    nav ul li a{color:#FFF; font-size:15px; padding:10px 20px; display:block; border-bottom: 1px solid rgba(225,225,225,0.1);}
+    nav ul li a i{color: #e9e9e9; padding-right:13px;}
+}
+
+@media only screen and (max-width: 980px) {
+    .content{width:90%;}
+}
+
+@media only screen and (max-width: 568px) {
+    h1{padding:25px 0px;}
+    h1 span{display:block;}
+}
+
+@media only screen and (max-width: 480px) {
+    section {max-width: 90%;}
+}
+
+@media only screen and (max-width: 360px) {
+    h1{font-size:20px;}
+    label{padding:5px 0px;}
+    #logo{font-size: 20px;}
+    nav{top:47px;}
+}
+
+@media only screen and (max-width: 320px) {
+    h1 {padding: 20px 0px;}
+}

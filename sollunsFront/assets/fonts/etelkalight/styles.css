@@ -1,0 +1,8 @@
+
+@font-face {
+  font-family: 'EtelkaLightPro';
+  src: url('EtelkaLightPro.eot?#iefix') format('embedded-opentype'),  url('EtelkaLightPro.otf')  format('opentype'),
+	     url('EtelkaLightPro.woff') format('woff'), url('EtelkaLightPro.ttf')  format('truetype'), url('EtelkaLightPro.svg#EtelkaLightPro') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}

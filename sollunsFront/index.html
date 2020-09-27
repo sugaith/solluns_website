@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+==============================================
+    DEVELOPED BY
+        SUGAITH
+    sugaith@gmail.com
+    github.com/sugaith
+    happy coding!
+    *i will refactor this
+==============================================
+
+-->
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157433717-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'UA-157433717-1');
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+  <link rel="manifest" href="assets/favicon/site.webmanifest">
+  <link rel="mask-icon" href="assets/favicon/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Solluns - Engenharia e Geologia</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/menu.css">
+  <link rel="stylesheet" href="libs/carouselcss/responsive-carousel.css">
+  <!--    <link href="//db.onlinewebfonts.com/c/ea9c39ae14c6b912252d623fbf7063ee?family=Gomme+Sans+W04+ExtraBold" rel="stylesheet" type="text/css"/>-->
+
+</head>
+
+<body>
+<!--LIBS-->
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+<script src="libs/TweenMax.min.js"></script>
+<script src="libs/ScrollMagic.min.js"></script>
+<script src="libs/animation.gsap.js"></script>
+<script src="libs/gsap/ScrollToPlugin.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<script src="libs/three.js"></script>
+<script src="libs/GLTFLoader.js"></script>
+<script src="libs/OrbitControls.js"></script>
+<script src=libs/debug.addIndicators.min.js></script>
+<script src=libs/DrawSVGPlugin.min.js></script>
+<!--    <script src="libs/three-min.js"></script>-->
+<script src="libs/SimplexNoise.js"></script>
+<script src="libs/threex.terrain.js"></script>
+
+<!--
+====================================================================
+JAVASCRIPT <3 <3 <3 <3
+====================================================================
+-->
+<script>
+  const blue_logo = "#1E4081";
+  const brown_ground = "#8B4513";
+
+
+  let scene = new THREE.Scene();
+  // scene.fog = new THREE.FogExp2( "#ffffff", 0.01 );
+  scene.fog = new THREE.Fog("#ffffff", 10, 100);
+  let rayCaster = new THREE.Raycaster();
+  let mouse = new THREE.Vector2();
+  let INTERSECTED;
+
+  //CAMERA
+  let camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    1, 10000
+  );
+  camera.position.set(0, 10, 51);
+  // camera.up = new THREE.Vector3(0,0,1);
+  //
+  // var vetCameraLook = new THREE.Vector3(0,0,0) ;
+  // camera.lookAt( vetCameraLook );
+
+
+  //RENDERER
+  // let renderer = new THREE.WebGLRenderer({antialias: true});
+  var renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
+  renderer.setClearColor("#fff333", 10);
+  // renderer.setClearAlpha();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(window.devicePixelRatio);
+  document.body.appendChild(renderer.domElement);
+
+  //LIGHT
+  let light = new THREE.PointLight(0xffffff);
+  light.position.set(10, 0, 25);
+  scene.add(light);
+
+  //BLENDER MODELS
+  let loader = new THREE.GLTFLoader();
+  let logo3d;
+  //logo solluns
+  // loader.load('assets/logo3d_solluns_2.glb', function (gltf) {
+  loader.load('assets/logo3d_2.glb', function (gltf) {
+    scene.add(gltf.scene);
+    logo3d = gltf;
+    // renderer.render(scene, camera)
+    console.log("LOGOO");
+    console.log(logo3d);
+    // logo3d.scene.position.x -= 8;
+    logo3d.scene.rotation.y = 0.15;
+    logo3d.scene.rotation.x = 0.081;
+    logo3d.scene.rotation.z = -0.009;
+    logo3d.scene.translateX(-7.2);
+    logo3d.scene.translateY(7.2);
+
+  });
+
+  let tripe3d, tripe3d_2, tripe3d_3;
+  //equipamento solluns1
+  loader.load('assets/tripleLeg_solluns_2.glb', function (gltf) {
+    tripe3d = gltf;
+    scene.add(gltf.scene);
+    console.log("TRIPE1");
+    console.log(tripe3d);
+    // tripe3d.scene.rotation.y = Math.PI;
+    tripe3d.scene.scale.x = 3;
+    tripe3d.scene.scale.y = 3;
+    tripe3d.scene.scale.z = 3;
+    //
+    tripe3d.scene.translateY(-15);//cima baixo
+    tripe3d.scene.translateZ(-136);//frente traz
+    tripe3d.scene.translateX(-46);
+
+
+  });
+  let loader2 = new THREE.GLTFLoader();
+  //equipamento solluns2
+  loader2.load('assets/tripleLeg_solluns_2.glb', function (gltf) {
+    tripe3d_2 = gltf;
+    scene.add(gltf.scene);
+    console.log("TRIPE2");
+    console.log(tripe3d_2);
+    // tripe3d.scene.rotation.y = Math.PI - 0.80;
+    tripe3d_2.scene.scale.x = 3;
+    tripe3d_2.scene.scale.y = 3;
+    tripe3d_2.scene.scale.z = 3;
+    //
+    tripe3d_2.scene.translateY(-15);//cima baixo
+    tripe3d_2.scene.translateZ(-140);//frente traz
+    // tripe3d_2.scene.translateX( -23 );
+
+
+  });
+
+  //===solluns font===============================
+  //===solluns font===============================
+  let fontLoader = new THREE.FontLoader();
+  fontLoader.load('assets/fonts/js/Etelka Medium Pro_Bold2.json', function (font) {
+    var xMid, text;
+    var color = "#1E4081";
+    var matDark = new THREE.LineBasicMaterial({
+      color: color,
+      side: THREE.DoubleSide
+    });
+    var matLite = new THREE.MeshBasicMaterial({
+      // wireframe: true,
+      color: color,
+      transparent: false,
+      opacity: 1,
+      side: THREE.DoubleSide
+    });
+    var message = "SOLLUNS";
+    var shapes = font.generateShapes(message, 4.5);
+    var geometry = new THREE.ShapeBufferGeometry(shapes);
+    //todo CALCULAR LARGURA DE TODO a LOGO 3D!!
+    //TODO SE SCREEN WIDTH FOR PEQUENA, POE LOGO EM CIMA ESCRITA EM BAIXO!!
+    geometry.computeBoundingBox();
+    xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+    // geometry.translate( xMid, 0, 0 );
+    geometry.translate(-8.2, 11.1, 0);
+
+    // make shape ( N.B. edge view not visible )
+    text = new THREE.Mesh(geometry, matLite);
+    // text.position.z = - 1;
+    scene.add(text);
+  }); //end load function
+  fontLoader.load('assets/fonts/js/Etelka Medium Pro_Regular.json', function (font) {
+    var xMid, text;
+    var color = "#000000";
+    var matDark = new THREE.LineBasicMaterial({
+      color: color,
+      side: THREE.DoubleSide
+    });
+    var matLite = new THREE.MeshBasicMaterial({
+      // wireframe: true,
+      color: color,
+      transparent: false,
+      opacity: 1,
+      side: THREE.DoubleSide
+    });
+    var message = "Engenharia e Geologia";
+    var shapes = font.generateShapes(message, 1.5);
+    var geometry = new THREE.ShapeBufferGeometry(shapes);
+    //todo CALCULAR LARGURA DE TODO a LOGO 3D!!
+    //TODO SE SCREEN WIDTH FOR PEQUENA, POE LOGO EM CIMA ESCRITA EM BAIXO!!
+    geometry.computeBoundingBox();
+    xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+    // geometry.translate( xMid, 0, 0 );
+    geometry.translate(-4.5, 8.1, 2);
+
+    // make shape ( N.B. edge view not visible )
+    text = new THREE.Mesh(geometry, matLite);
+    // text.position.z = - 1;
+    scene.add(text);
+  }); //end load function
+
+
+  //===TERRAIN===============================
+  //===TERRAIN===============================
+  var onRenderFcts = [];
+
+  var heightMap = THREEx.Terrain.allocateHeightMap(256, 256);
+  THREEx.Terrain.simplexHeightMap(heightMap);
+  var geometry = THREEx.Terrain.heightMapToPlaneGeometry(heightMap);
+  THREEx.Terrain.heightMapToVertexColor(heightMap, geometry);
+  /* Wireframe built-in color is white, no need to change that */
+  var material = new THREE.MeshBasicMaterial({
+    // wireframe: true,
+    // color: brown_ground,
+    color: blue_logo,
+    wireframeLinewidth: 1
+  });
+  var materialTerrain2 = new THREE.MeshBasicMaterial({
+    wireframe: false,
+    // color: brown_ground,
+    color: blue_logo,
+    wireframeLinewidth: 1
+  });
+
+  var terrain = new THREE.Mesh(geometry, material);
+  var terrain2 = new THREE.Mesh(geometry, materialTerrain2);
+
+  scene.add(terrain);
+  scene.add(terrain2);
+
+  terrain.lookAt(new THREE.Vector3(0, 1, 0));
+  terrain.scale.y = 100;
+  terrain.scale.x = 50;
+  terrain.scale.z = 1.2;
+  terrain.scale.multiplyScalar(5);
+  terrain.position.y -= 4.2;
+  terrain.position.z = 120;
+
+  terrain2.lookAt(new THREE.Vector3(0, 1, 0));
+  terrain2.scale.y = 100;
+  terrain2.scale.x = 50;
+  terrain2.scale.z = 2.2;
+  terrain2.scale.multiplyScalar(5);
+  terrain2.position.y -= 42;
+  terrain2.position.z = 120;
+
+  console.log("terrain:::");
+  console.log(terrain);
+
+
+  /* Play around with the camera */
+  onRenderFcts.push(function (delta, now) {
+    // terrain.rotation.z += 0.2 * delta;
+  })
+
+  //SMOKE===============================
+  //SMOKE===============================
+  let smokeTexture = THREE.ImageUtils.loadTexture('assets/Smoke-Element.png');
+  let smokeMaterial = new THREE.MeshLambertMaterial({map: smokeTexture, transparent: true});
+  let smokeGeo = new THREE.PlaneGeometry(300, 300);
+  var smokeParticles = [];
+  for (p = 0; p < 1; p++) {
+    let plusOrMinus = Math.random() < 0.5 ? -1 : 1;
+    let particle = new THREE.Mesh(smokeGeo, smokeMaterial);
+    particle.position.set(
+      //X
+      // (Math.random()*20 +1 ) * plusOrMinus,
+      0,
+      //Y
+      Math.random() * 20,
+
+      //Z
+      // (Math.random()*25 +15)*-1,
+      -15,
+    );
+    // particle.rotation.z = Math.random() * 360;
+
+    scene.add(particle);
+    particle.rotationDirection = plusOrMinus;
+    smokeParticles.push(particle);
+  }
+
+
+  /*
+          ==============================================================================================
+          functions
+          ==============================================================================================
+  */
+
+  function evolveSmoke() {
+    let sp = smokeParticles.length;
+    while (sp--) {
+      if (smokeParticles[sp].rotationDirection > 0)
+        smokeParticles[sp].rotation.z += 0.004;
+      else
+        smokeParticles[sp].rotation.z -= 0.004;
+    }
+  }
+
+  //mouseMove raycast event
+  function onMouseMove(event) {
+    event.preventDefault();
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  }
+
+  function onMouseClick(event) {
+    event.preventDefault();
+    // console.log( "onMouseMove!!" );
+
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    rayCaster.setFromCamera(mouse, camera);
+
+    let intersections = rayCaster.intersectObjects(scene.children, true);
+    for (let i = 0; i < intersections.length; i++) {
+      console.log("intersection detected!!");
+      console.log(intersections.length);
+
+      let tl = new TimelineMax();
+
+      tl.to(intersections[i].object.scale, .5, {x: -0.5, ease: Expo.easeOut});
+      tl.to(intersections[i].object.position, 5, {
+        x: (Math.random() * 25),
+        y: (Math.random() * 25),
+        z: (Math.random() * 25),
+        ease: Expo.easeOut
+      });
+      tl.to(intersections[i].object.scale, 5, {y: 3, ease: Expo.easeOut}, "=-5");
+      tl.to(intersections[i].object.rotation, 5, {y: Math.PI * 6, ease: Expo.easeOut}, "=-5");
+    }
+
+  }
+
+
+  //add click event (update mouse position)
+  document.addEventListener('mousemove', onMouseMove, false);
+  // document.addEventListener('click', onMouseClick, false);
+
+  //LISTEN TO SCREEN RESIZE
+  window.addEventListener('resize', () => {
+    // renderer.aspect =  window.innerWidth / window.innerHeight;
+    // renderer.setPixelRatio( window.devicePixelRatio );
+    // camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  }, false);
+
+
+  //ORBIT CONTROLS HELPER
+  let controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.update();
+
+
+  console.log("::::scene:::");
+  console.log(scene);
+  /*
+      ==============================================================================================
+      RENDER LOOP!!!
+      ==============================================================================================
+   */
+  let theta = 0, radius = 100;
+  let doneRotatingBack = true;
+  //render
+  // renderer.render( scene, camera );
+  let render = function () {
+    //ROTATE CAMERA
+    // theta += 0.1;
+    // camera.position.x = radius * Math.sin( THREE.Math.degToRad( theta ) );
+    // // camera.position.y = radius * Math.sin( THREE.Math.degToRad( theta ) );
+    // // camera.position.z = radius * Math.cos( THREE.Math.degToRad( theta ) );
+    // camera.lookAt( scene.position );
+    // camera.updateMatrixWorld();
+
+    //FIX 4 PIXEL RATIO RESIZE SCREEN ISSUE
+    const canvas = renderer.domElement;
+    camera.aspect = canvas.clientWidth / canvas.clientHeight;
+    camera.updateProjectionMatrix();
+
+    evolveSmoke();
+
+    //rotate scene WITH mouse track
+    // console.log(mouse)
+    if ((mouse.x > 0.72) || (mouse.x < -0.72) ||
+      (mouse.y > 0.5) || (mouse.y < -0.5)) {
+      if (!doneRotatingBack)
+        if (scene.rotation.x !== 0 || scene.rotation.y !== 0) {
+          console.log("ROTATE BACK ACTIVATED");
+          let tl_rotateBack = new TimelineMax();
+          tl_rotateBack.to(scene.rotation,
+            1,
+            {x: 0, y: 0}
+          );
+          doneRotatingBack = true;
+        }
+    } else {
+      doneRotatingBack = false;
+      if ((mouse.x > 0) && (scene.rotation.y < 0.05))
+        scene.rotation.y += 0.001;
+      if ((mouse.x < 0) && (scene.rotation.y > -0.05))
+        scene.rotation.y -= 0.001;
+      if ((mouse.y > 0) && (scene.rotation.x > -0.05))
+        scene.rotation.x -= 0.001;
+      if ((mouse.y < 0) && (scene.rotation.x < 0.05))
+        scene.rotation.x += 0.001;
+    }
+
+    //ORBIT CONTROLS HELPER
+    // controls.update();
+
+    //==================================================para raycaster!!
+    // rayCaster.setFromCamera(mouse, camera);
+    // var intersects = rayCaster.intersectObjects(scene.children);
+    // if (intersects.length > 0) {
+    //     if (INTERSECTED != intersects[0].object) {
+    //
+    //         if (INTERSECTED) {
+    //             // console.log(INTERSECTED);
+    //             INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
+    //         }
+    //
+    //         INTERSECTED = intersects[0].object;
+    //         // INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
+    //         INTERSECTED.material.emissive.setHex(0xff0000);
+    //     }
+    // } else {
+    //     if (INTERSECTED)
+    //         INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
+    //     INTERSECTED = null;
+    // }
+    //========================================================para raycaster!!
+
+
+    //render
+    renderer.render(scene, camera);
+    requestAnimationFrame(render);
+
+  };
+  render();
+
+  //ANIMATIONS 3D tweenmax timeline
+  //PARA AVANCO DE CAMERA
+  let tl3d = new TimelineMax().delay(.5);
+  tl3d.fromTo(
+    camera.position,
+    2.1,
+    {z: 210, y: 10},
+    {
+      z: 63, y: 3,
+      // ease: Expo.easeOut
+    },
+    "+=0"
+  );
+  //PARA COR DO SOLO
+  let targetColor = new THREE.Color(brown_ground);
+  tl3d.from(
+    terrain.material.color,
+    3,
+    {
+      r: targetColor.r,
+      g: targetColor.g,
+      b: targetColor.b,
+    },
+    "-=0.5"
+  );
+</script>
+
+<!--
+  ==============================================================
+  HTML
+  ==============================================================
+  -->
+
+<div id="loading_container">
+  <div id="loadingScene">
+    <div class="bar">
+      <div class="circle"></div>
+      <p>Aguarde...</p>
+    </div>
+  </div>
+</div>
+
+
+<header>
+  <section>
+    <a id="logo" href="#pinMenu">
+      <div class="navlogo" href="#panel pA">
+        <!--                    <img src="assets/imgs/singlelogo.fw.png" height="36px">-->
+        <img src="assets/imgs/newlogo2.fw.png" height="36px">
+      </div>
+    </a>
+    <!--            <a href="https://www.linkedin.com/in/sutharmayur" id="logo" target="_blank">Mayur Suthar</a>-->
+    <label for="toggle-1" class="toggle-menu">
+      <ul>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
+    </label>
+    <input type="checkbox" id="toggle-1">
+
+    <nav>
+      <ul>
+        <li><a href="#pinMenu"><i class="material-icons">house</i>Home</a></li>
+        <li><a href="#menuServicos"><i class="material-icons">eco</i>Segmento Ambiental</a></li>
+        <li><a href="#menuClientes"><i class="material-icons">apartment</i>Segmento Civil</a></li>
+        <!--                    <li><a href="#menuCases"><i class="icon-gear"></i>Cases</a></li>-->
+        <li><a href="#menuContato"><i class="material-icons">phone</i>Contato</a></li>
+      </ul>
+    </nav>
+  </section>
+</header>
+
+<!--    HOME-->
+<section id="pinMenu" class="spacer">
+  <div class="panelOwl">
+    <div class="carousel">
+      <div class="carousel-inner">
+        <div class="slide active">
+          <div class="desc_slider">
+            <p style="font-weight: bold; margin-bottom: 6px">Estudos Geotécnicos: </p>
+            <p>Qualidade em Sondagens à trado, à percussão</p>
+          </div>
+          <img src="assets/imgs/BANNER1.JPEG">
+        </div>
+        <div class="slide">
+          <div class="desc_slider">
+            <p style="font-weight: bold; margin-bottom: 6px">Laudos Geológicos: </p>
+            <p>Caracterização de solo, rocha e nascentes.</p>
+          </div>
+          <img src="assets/imgs/BANNER2.JPEG">
+        </div>
+        <div class="slide">
+          <div class="desc_slider">
+            <p style="font-weight: bold; margin-bottom: 6px">Passivos Ambientais: </p>
+            <p>Eficiência na avaliação preliminar e confirmatória para caracterizar contaminação de solo e água.</p>
+          </div>
+          <img src="assets/imgs/BANNER3.jpeg">
+        </div>
+        <div class="slide">
+          <div class="desc_slider">
+            <p style="font-weight: bold; margin-bottom: 6px">Mineração: </p>
+            <p>Agilidade no processo de requerimento de autorização de pesquisa e relatório final de pesquisa</p>
+          </div>
+          <img src="assets/imgs/BANNER4.jpeg">
+        </div>
+      </div>
+
+      <!-- Arrows navigation -->
+      <div class="arrow arrow-left">
+        <i style="font-size: 25px" class="material-icons">arrow_left</i>
+      </div>
+      <div class="arrow arrow-right">
+        <i class="material-icons md-48">arrow_right</i>
+      </div>
+
+    </div>
+
+  </div>
+
+
+</section>
+
+
+<div class="pinContainer">
+  <!--     ambiental       SERVICOS-->
+  <section id="menuServicos" class="panel pA">
+    <div class="subpanel">
+      <div id="listaServs" class="listaServs">
+        <h2 hidden class="titleSection">Segmento Ambiental</h2>
+        <p class="servParagraph"><i class="material-icons">check</i> Avaliação e Diagnóstico Ambiental</p>
+        <p class="servParagraph"><i class="material-icons">check</i> Avaliação de Integridade de Solo e Águas
+          Subterrâneas</p>
+        <p class="servParagraph"><i class="material-icons">check</i> Coleta de amostras e Monitoramento</p>
+        <p class="servParagraph"><i class="material-icons">check</i> Consultoria em Sustentabilidade</p>
+        <p class="servParagraph"><i class="material-icons">check</i> Ensaio de Permeabilidade</p>
+        <p class="servParagraph"><i class="material-icons">check</i> Estudo de Impacto Ambiental (EIA)</p>
+        <p class="servParagraph"><i class="material-icons">check</i> Estudos Hidrogeológicos</p>
+        <p class="servParagraph"><i class="material-icons">check</i> Laudos Técnicos</p>
+        <p class="servParagraph"><i class="material-icons">check</i> Laudo Geológico para Loteamentos</p>
+        <p class="servParagraph"><i class="material-icons">check</i> Licenciamento Ambiental</p>
+        <p class="servParagraph"><i class="material-icons">check</i> Outorga de Águas</p>
+        <p class="servParagraph"><i class="material-icons">check</i> Passivos Ambientais</p>
+        <p class="servParagraph"><i class="material-icons">check</i> Plano de Controle Ambiental (PCA)</p>
+        <p class="servParagraph"><i class="material-icons">check</i> Plano de Gerenciamento de Resíduos Sólidos (PGRS,
+          PGRCC, PGRSS)</p>
+        <p class="servParagraph"><i class="material-icons">check</i> Plano de Recuperação de Áreas Degradadas (PRAD)</p>
+        <p class="servParagraph"><i class="material-icons">check</i> Projeto de Aterros Sanitários</p>
+        <p class="servParagraph"><i class="material-icons">check</i> Projeto de Capitação de Águas Pluviais e Reuso de
+          Águas Cinzas</p>
+        <p class="servParagraph"><i class="material-icons">check</i> Projeto de Telhados Verdes</p>
+        <p class="servParagraph"><i class="material-icons">check</i> Projeto de Sistemas de Tratamento de esgoto</p>
+        <p class="servParagraph"><i class="material-icons">check</i> Regularização de Área para Exploração Mineral
+          (DNPM-IAP)</p>
+        <p class="servParagraph"><i class="material-icons">check</i> Relatório de Impacto Ambiental (RIMA)</p>
+        <p class="servParagraph"><i class="material-icons">check</i> Relatório de Controle Ambiental (RCA)</p>
+      </div>
+    </div>
+
+  </section>
+
+
+</div>
+
+
+<!--   civil servicos-->
+<div class="pinContainer">
+  <div id="pinClientes">
+  </div>
+  <section id="menuClientes" class="panel pB">
+    <div class="subpanel">
+      <div class="listaServs">
+        <h2 hidden class="titleSection">Segmento Civil</h2>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!--    CONTATO-->
+<div class="pinContainer" style="flex-direction: column">
+  <section id="menuContato" class="panel pD">
+
+    <div class="subpanel" style="min-height: 90%">
+      <div class="googleForm">
+        <iframe
+            src="https://docs.google.com/forms/d/e/1FAIpQLSe-GF4FW2pZfU2sPNKY5R7edKzChsU7tqMly67oDQbtfGoCeA/viewform?embedded=true"
+            width="640" height="819" frameborder="0" marginheight="0" marginwidth="0">Carregando…
+        </iframe>
+      </div>
+
+    </div>
+  </section>
+  <footer class="footerContato">
+    <div style="margin-top: 9px" class="divFooter">
+      <p>
+        A SOLLUNS Engenharia e Geologia executa serviços de Engenharia Ambiental, Civil e Geologia.
+        Desenvolvemos diversas modalidades de estudos e soluções para projetos em variadas escalas,
+        tais como: residências, comerciais, loteamentos, postos de combustíveis, rodovias, mineração e setor público.
+      </p>
+    </div>
+
+    <div class="divFooter">
+      <i class="material-icons">local_phone</i>
+      <p>(45) 3031-3031</p>
+    </div>
+
+    <div class="divFooter">
+      <a style="text-decoration: none; color: white" href="mailto:contato@solluns.com">
+        <div class="divFooter">
+          <i class="material-icons">mail</i>
+          <p>contato@solluns.com</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="divFooter">
+      <a style=" text-decoration: none; color: white" target="_blank"
+         href="https://www.google.com.br/maps/place/R.+Mal.+Floriano,+1446+-+02+-+Centro,+Foz+do+Iguaçu+-+PR,+85851-020/@-25.5415874,-54.5853635,17z/data=!3m1!4b1!4m5!3m4!1s0x94f6904b99e098e9:0x554b2088f35a8e9a!8m2!3d-25.5415874!4d-54.5831748">
+        <div class="divFooter">
+          <i class="material-icons">my_location</i>
+          <p>Travessa Cristiano Weirich 91 - Sala 313, Centro, Foz do Iguaçu - PR, 85851-140</p>
+        </div>
+      </a>
+    </div>
+
+  </footer>
+</div>
+
+
+<!--
+  ==============================================================
+  ANIMATIONS CONTROlLER $ banner
+  ==============================================================
+  -->
+<script src="libs/carouselcss/responsive-carousel.js"></script>
+
+<script>
+  //PARA MENU
+  tl3d.fromTo(
+    $("header"),
+    2,
+    {top: -110},
+    {top: -9, ease: Power1.easeOut},
+    "-=3"
+  );
+  //PARA slider
+  tl3d.fromTo(
+    $(".panelOwl"),
+    2,
+    {opacity: 0},
+    {opacity: 0.72},
+    "-=2"
+  );
+  var opts = {
+    // CSS class for 'next' arrow
+    arrowRight: '.arrow-right',
+    // CSS class for 'prev' arrow
+    arrowLeft: '.arrow-left',
+    // <a href="https://www.jqueryscript.net/animation/">Animation</a> speed
+    speed: 900,
+    // Auto-play delay time
+    slideDuration: 4000
+  };
+  $('.carousel').BannerSlide(opts);
+
+  //init scroll scene controller
+  let controller = new ScrollMagic.Controller();
+
+  //CAMERA MUNDO 3D -> ir para subsolo
+  let tl_mundo3D = new TimelineMax();
+  tl_mundo3D
+    .to(
+      smokeParticles[0].position,
+      .5,
+      {z: -120},
+      // "-=1"
+    )
+    .to(
+      camera.position,
+      1,
+      {z: -50, y: -35, ease: Power1.easeInOut},
+      "-=0.5"
+    )
+    .to(
+      controls.target,
+      1,
+      {x: 0.56, y: 0, z: 0},
+      // "+=1"
+    );
+  //build scroll scene
+  new ScrollMagic.Scene({
+    triggerElement: "#menuServicos",
+  })
+    .setTween(tl_mundo3D)
+    // .addIndicators({
+    //     colorTrigger: "green",
+    //     colorStart: "green",
+    //     colorEnd: "green",
+    //     indent: 80
+    // })
+    .addTo(controller);
+
+  //para serviços
+  let tl_textServs = new TimelineMax();
+  $(".servParagraph").each(function (index, element) {
+    tl_textServs
+      .staggerFrom(
+        $(element),
+        0.3, {
+          scale: 3, autoAlpha: 0, rotationX: -180,
+          transformOrigin: "100% 50%",
+          ease: Back.easeOut
+        },
+        0
+      );
+  });
+  new ScrollMagic.Scene({
+    triggerElement: "#menuServicos",
+    // triggerHook: "menuServicos",
+  })
+    // .setPin("#menuClientes")
+    .setTween(tl_textServs)
+    // .addIndicators({
+    //     colorTrigger: "pink",
+    //     colorStart: "pink",
+    //     colorEnd: "pink",
+    //     indent: 0
+    // })
+    .addTo(controller);
+
+  //para serviços civil
+  let tl_textServsCivil = new TimelineMax();
+  $(".civilParagraph").each(function (index, element) {
+    tl_textServsCivil
+      .staggerFrom(
+        $(element),
+        0.3, {
+          scale: 3, autoAlpha: 0, rotationX: -180,
+          transformOrigin: "100% 50%",
+          ease: Back.easeOut
+        },
+        0
+      );
+  });
+  new ScrollMagic.Scene({
+    triggerElement: "#pinClientes",
+    // triggerHook: "menuServicos",
+  })
+    .setPin("#pinClientes")
+    .setTween(tl_textServsCivil)
+    // .addIndicators({
+    //     colorTrigger: "pink",
+    //     colorStart: "pink",
+    //     colorEnd: "pink",
+    //     indent: 0
+    // })
+    .addTo(controller);
+
+
+  // PARA CASES
+  let tl_cases;
+  $(".case").each(function (index, element) {
+    console.log(element.style);
+
+    tl_cases = new TimelineLite({paused: true});
+    tl_cases
+      .to($(element).find(".desc_case2"), 0.2, {display: "table"})
+      .to($(element).find(".fundo_case img"), 0.2, {opacity: 1})
+      .to($(element), 0.2, {height: "100%", width: "100%", position: "relative"})
+      // .to($(element).find(".desc_case"), 0.2, {opacity:0.7, backgroundColor: "white"})
+      .to($(element).find(".desc_case2"), 0.2, {"z-index": 1, opacity: 0.9})
+    element.animation = tl_cases;
+    element.open = false;
+  });
+
+  // $(".case").mouseenter(function(){
+  //     this.animation.play();
+  // });
+  $(".case").mousedown(function () {
+    if (this.open) {
+      this.animation.reverse();
+      this.open = false;
+    } else {
+      this.animation.play();
+      this.open = true;
+    }
+  });
+  //
+  $(".case").mouseleave(function () {
+    this.animation.reverse();
+  });
+
+
+  //PARA NAVBAR
+  $(".navbar a").each(function (index, element) {
+    // console.log(element.style);
+    //
+    // tl_navbar = new TimelineLite({paused:true});
+    // tl_navbar
+    //     .to($(element), 0.2, {scaleX:"1.5"} )
+    //     .to($(element), 0.2, {scaleX:"1"} )
+    // element.animation = tl_navbar;
+  });
+
+
+  $(".menuItem").mouseover(function () {
+    // this.animation.play();
+    tl_navbar = new TimelineLite();
+    tl_navbar
+      .to($(this), 0.2, {scaleX: "0.7"})
+      .to($(this), 0.2, {scaleY: "1.3"}, "-=0.2")
+      .to($(this), 0.2, {scaleX: "1", ease: Bounce.easeOut})
+      .to($(this), 0.2, {scaleY: "1", ease: Bounce.easeOut}, "-=0.2")
+    // .to($(this), 1, {backgroundColor:0x1E4081}, "-=0.8" )
+    // .to($(this), 1, {color:0xffffff}, "-=1" )
+  });
+
+  $(".menuItem").mouseout(function () {
+    // this.animation.play();
+    // tl_navbar = new TimelineLite();
+    // tl_navbar
+    //     // .to($(this), 0.5, {backgroundColor: "rgb(255,255,255,0)"}, "+=0.2" )
+    //     // .to($(this), 0.5, {color:0x1E4081}, "-=0.5" )
+  });
+
+  $(".navlogo img").mouseover(function () {
+    // this.animation.play();
+    tl_navbar = new TimelineLite();
+    tl_navbar
+      .to($(this), 0.2, {scale: "1.5"})
+      .to($(this), 0.2, {scale: "1"})
+  });
+
+
+  //  bind scroll to anchor links
+  $(document).on("click", "a[href^='#']", function (e) {
+    var id = $(this).attr("href");
+    if ($(id).length > 0) {
+      e.preventDefault();
+      console.log("clicouu AAA")
+
+      // trigger scroll
+      controller.scrollTo(id);
+
+      // if supported by the browser we can even update the URL.
+      // if (window.history && window.history.pushState) {
+      //     history.pushState("", document.title, id);
+      // }
+    }
+  });
+
+
+  $(document).ready(function () {
+    //LOADER SCREEN
+    setTimeout(function () {
+      let tl_fadeloading = new TimelineMax();
+      tl_fadeloading.to(
+        '#loading_container',
+        0.5,
+        {opacity: 0},
+      ).to(
+        '#loading_container',
+        0.1,
+        {"z-index": -10},
+      )
+        .play();
+    }, 1000);
+
+  });
+</script>
+
+
+</body>
+</html>
